@@ -1,0 +1,50 @@
+plugins {
+    id 'java'
+}
+
+
+ext.versions = [
+        log4j                                  : '2.10.0',
+        junit                                  : '4.12',
+        scala                                  : '2.11',
+        kafka                                  : '1.1.1',
+        apacheSpark                            : '2.4.0',
+        lombok                                 : '1.18.4',
+]
+
+group 'io.relayr'
+version '1.0-SNAPSHOT'
+
+sourceCompatibility = 1.8
+
+repositories {
+    mavenCentral()
+    maven {
+        url 's3://relayr-maven'
+        authentication {
+            awsIm(AwsImAuthentication)
+        }
+    }
+}
+
+dependencies {
+    implementation group: 'org.apache.logging.log4j', name: 'log4j', version: versions.log4j
+    implementation group: 'org.apache.logging.log4j', name: 'log4j-api', version: versions.log4j
+    implementation group: 'org.apache.logging.log4j', name: 'log4j-core', version: versions.log4j
+    implementation group: 'org.apache.logging.log4j', name: 'log4j-1.2-api', version: versions.log4j
+    implementation group: 'org.apache.logging.log4j', name: 'log4j-slf4j-impl', version: versions.log4j
+    implementation group: 'org.apache.logging.log4j', name: 'log4j-web', version: versions.log4j
+    compileOnly group: 'org.projectlombok', name: 'lombok', version: versions.lombok
+
+    implementation group: 'org.apache.spark', name: "spark-streaming-kafka-0-10_$versions.scala", version: versions.apacheSpark
+    implementation group: 'org.apache.spark', name: "spark-streaming_$versions.scala", version: versions.apacheSpark
+    implementation group: 'org.apache.spark', name: "spark-core_$versions.scala", version: versions.apacheSpark
+    implementation group: 'org.apache.spark', name: "spark-sql_$versions.scala", version: versions.apacheSpark
+
+    implementation(group: 'io.relayr', name: "analytics-spark-metrics_$versions.scala", version: "1.0.6", changing: true)
+
+    testCompileOnly group: 'org.projectlombok', name: 'lombok', version: versions.lombok
+
+    testCompile group: 'junit', name: 'junit', version: versions.junit
+    testCompile group: 'org.mockito', name: 'mockito-core', version: '2.23.4'
+}
